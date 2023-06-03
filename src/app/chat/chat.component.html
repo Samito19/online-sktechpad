@@ -1,0 +1,4 @@
+<div class="chat-container">
+  <div *ngFor="let message of messages$ | async">{{ message }}</div>
+  <button (click)="sendMessage()"></button>
+</div>
