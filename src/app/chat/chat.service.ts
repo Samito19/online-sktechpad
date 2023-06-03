@@ -1,6 +1,6 @@
 import { SignlarRService } from './../signlar.service';
 import { Injectable } from '@angular/core';
-import { receiveMessage } from './chat.actions';
+import { receiveMessage, setClientId } from './chat.actions';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
@@ -8,31 +8,45 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class ChatService {
-  messages$: Observable<string[]>;
+  messages$: Observable<{ username: string; content: string }[]>;
+  clientId: string;
   connection: signalR.HubConnection;
 
   constructor(
-    private store: Store<{ messages: string[] }>,
+    private store: Store<{
+      messages: { username: string; content: string }[];
+      clientId: string;
+    }>,
     private signlarRService: SignlarRService
   ) {
     this.messages$ = store.select('messages');
+    store
+      .select('clientId')
+      .subscribe((clientId) => (this.clientId = clientId));
   }
 
   async initChatHubConnection() {
     this.connection = await this.signlarRService.Connect('hub');
+    this.store.dispatch(
+      setClientId({ clientId: this.connection.connectionId! })
+    );
     this.connection.on(
       'messageReceived',
-      (username: string, message: string) => {
-        this.store.dispatch(receiveMessage({ message }));
+      (username: string, content: string) => {
+        this.store.dispatch(receiveMessage({ username, content }));
       }
     );
   }
 
-  getMessages(): Observable<string[]> {
+  getMessages(): Observable<{ username: string; content: string }[]> {
     return this.messages$;
   }
 
+  getClientId(): string {
+    return this.clientId;
+  }
+
   sendMessage() {
-    this.connection.send('newMessage', 1001, 'test');
+    this.connection.send('newMessage', this.clientId, 'test');
   }
 }

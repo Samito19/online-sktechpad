@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { ChatService } from './chat.service';
 
 @Component({
@@ -9,14 +9,14 @@ import { ChatService } from './chat.service';
   styleUrls: ['./chat.component.scss'],
 })
 export class ChatComponent implements OnInit {
-  messages$: Observable<string[]>;
+  messages$: Observable<{ username: string; content: string }[]>;
 
-  constructor(private chatService: ChatService) {}
-
-  async ngOnInit(): Promise<void> {
-    this.chatService.initChatHubConnection().then((res) => console.log(res));
+  constructor(private chatService: ChatService) {
+    this.chatService.initChatHubConnection();
     this.messages$ = this.chatService.getMessages();
   }
+
+  async ngOnInit(): Promise<void> {}
 
   sendMessage() {
     this.chatService.sendMessage();

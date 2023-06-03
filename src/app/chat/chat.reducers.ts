@@ -1,9 +1,18 @@
 import { createReducer, on } from '@ngrx/store';
-import { receiveMessage } from './chat.actions';
+import { receiveMessage, setClientId } from './chat.actions';
 
-export const initialState: string[] = [];
+export const initialMessagesState: { username: string; content: string }[] = [];
+export const initialClientId: string = '';
 
 export const messagesReducer = createReducer(
-  initialState,
-  on(receiveMessage, (state, { message }) => [...state, message])
+  initialMessagesState,
+  on(receiveMessage, (state, { username, content }) => [
+    ...state,
+    { username, content },
+  ])
+);
+
+export const clientIdReducer = createReducer(
+  initialClientId,
+  on(setClientId, (state, { clientId }) => clientId)
 );
