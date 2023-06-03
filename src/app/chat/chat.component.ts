@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import * as signalR from '@microsoft/signalr';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ChatService } from './chat.service';
 
@@ -9,6 +8,8 @@ import { ChatService } from './chat.service';
   styleUrls: ['./chat.component.scss'],
 })
 export class ChatComponent implements OnInit {
+  @ViewChild('newMessage') input: ElementRef;
+
   messages$: Observable<{ username: string; content: string }[]>;
 
   constructor(private chatService: ChatService) {
@@ -18,7 +19,10 @@ export class ChatComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {}
 
-  sendMessage() {
-    this.chatService.sendMessage();
+  sendMessage(newMessage: string) {
+    if (newMessage) {
+      this.chatService.sendMessage(newMessage);
+      this.input.nativeElement.value = '';
+    }
   }
 }

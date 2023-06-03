@@ -2,5 +2,13 @@
   <div *ngFor="let message of messages$ | async">
     {{ message.username }} : {{ message.content }}
   </div>
-  <button (click)="sendMessage()"></button>
+  <div class="chat-container-input">
+    <input #newMessage class="chat-container-input-field" />
+    <button
+      class="chat-container-input-button"
+      (click)="sendMessage(newMessage.value)"
+    >
+      Send
+    </button>
+  </div>
 </div>

@@ -46,7 +46,7 @@ export class ChatService {
     return this.clientId;
   }
 
-  sendMessage() {
-    this.connection.send('newMessage', this.clientId, 'test');
+  sendMessage(newMessage: string) {
+    this.connection.send('newMessage', this.clientId, newMessage);
   }
 }

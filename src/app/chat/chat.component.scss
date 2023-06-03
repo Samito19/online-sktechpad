@@ -1,5 +1,28 @@
 .chat-container {
+  display: flex;
+  flex-direction: column;
   height: 40rem;
   width: 25rem;
-  background-color: red;
+  border-radius: 5px;
+  border: 2px solid black;
+}
+
+.chat-container-input {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: auto;
+  margin-bottom: 1rem;
+  width: 100%;
+  height: 2rem;
+}
+.chat-container-input-field {
+  width: 75%;
+}
+.chat-container-input-button {
+  width: 10%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
