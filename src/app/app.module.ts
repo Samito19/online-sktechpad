@@ -6,9 +6,10 @@ import { AppComponent } from './app.component';
 import { ChatComponent } from './chat/chat.component';
 import { StoreModule } from '@ngrx/store';
 import { clientIdReducer, messagesReducer } from './chat/chat.reducers';
+import { CanvasComponent } from './canvas/canvas.component';
 
 @NgModule({
-  declarations: [AppComponent, ChatComponent],
+  declarations: [AppComponent, ChatComponent, CanvasComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
