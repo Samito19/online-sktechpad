@@ -1,3 +1,11 @@
 body {
   margin: 0;
 }
+
+.app-container{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 4rem;
+}
