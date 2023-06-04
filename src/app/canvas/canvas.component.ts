@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import p5 from 'p5';
+import { CanvasService } from './canvas.service';
 
 @Component({
   selector: 'app-canvas',
@@ -8,6 +9,12 @@ import p5 from 'p5';
 })
 export class CanvasComponent implements OnInit {
   canvas: p5;
+  stringCanvas: string = '';
+
+  constructor(private canvasService: CanvasService) {
+    this.canvasService.initCanvasHubConnection();
+  }
+
   ngOnInit(): void {
     const sketch = (s: p5) => {
       s.setup = () => {
@@ -22,10 +29,23 @@ export class CanvasComponent implements OnInit {
         if (s.mouseIsPressed) {
           if (s.mouseButton === s.LEFT) {
             s.line(s.mouseX, s.mouseY, s.pmouseX, s.pmouseY);
+            this.canvasService.sendCanvas(
+              s.mouseX,
+              s.mouseY,
+              s.pmouseX,
+              s.pmouseY
+            );
+            console.log('Sending...');
           }
         }
       };
     };
     this.canvas = new p5(sketch);
+
+    this.canvasService
+      .getOtherDrawings()
+      .subscribe((postions: any) =>
+        this.canvas.line(postions[0], postions[1], postions[2], postions[3])
+      );
   }
 }

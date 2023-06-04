@@ -17,7 +17,7 @@ export class ChatComponent implements OnInit {
     this.messages$ = this.chatService.getMessages();
   }
 
-  async ngOnInit(): Promise<void> {}
+  async ngOnInit() {}
 
   sendMessage(newMessage: string) {
     if (newMessage) {

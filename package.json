@@ -22,9 +22,11 @@
     "@ngrx/store": "^16.0.1",
     "@types/node": "^20.2.5",
     "@types/p5": "^1.6.2",
+    "circular-json": "^0.5.9",
     "p5": "^1.6.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "util": "^0.12.5",
     "zone.js": "~0.13.0"
   },
   "devDependencies": {

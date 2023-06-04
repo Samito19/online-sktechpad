@@ -1,4 +1,4 @@
-import { SignlarRService } from './../signlar.service';
+import { SignalRService } from '../signalr.service';
 import { Injectable } from '@angular/core';
 import { receiveMessage, setClientId } from './chat.actions';
 import { Store } from '@ngrx/store';
@@ -17,7 +17,7 @@ export class ChatService {
       messages: { username: string; content: string }[];
       clientId: string;
     }>,
-    private signlarRService: SignlarRService
+    private signalRService: SignalRService
   ) {
     this.messages$ = store.select('messages');
     store
@@ -26,7 +26,7 @@ export class ChatService {
   }
 
   async initChatHubConnection() {
-    this.connection = await this.signlarRService.Connect('hub');
+    this.connection = await this.signalRService.Connect('chat');
     this.store.dispatch(
       setClientId({ clientId: this.connection.connectionId! })
     );
