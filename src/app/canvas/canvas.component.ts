@@ -39,8 +39,23 @@ export class CanvasComponent implements OnInit {
           }
         }
       };
+
+      s.keyPressed = () => {
+        if (s.key === 'c') {
+          this.canvasService.clearCanvas();
+          window.location.reload();
+        }
+      };
     };
     this.canvas = new p5(sketch);
+
+    this.canvasService
+      .getPrevDrawings()
+      .subscribe((drawings: any) =>
+        drawings.forEach((drawing: number[]) =>
+          this.canvas.line(drawing[0], drawing[1], drawing[2], drawing[3])
+        )
+      );
 
     this.canvasService
       .getOtherDrawings()

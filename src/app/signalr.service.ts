@@ -9,7 +9,7 @@ export class SignalRService {
     let connection: signalR.HubConnection;
     connection = new signalR.HubConnectionBuilder()
       .withUrl(
-        `https://sketchpad-api.azurewebsites.net/${hub}`,
+        `http://localhost:5212/${hub}`,
         signalR.HttpTransportType.LongPolling
       )
       .build();
