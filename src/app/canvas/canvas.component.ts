@@ -35,7 +35,6 @@ export class CanvasComponent implements OnInit {
               s.pmouseX,
               s.pmouseY
             );
-            console.log('Sending...');
           }
         }
       };

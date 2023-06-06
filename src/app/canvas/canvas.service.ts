@@ -39,19 +39,17 @@ export class CanvasService {
     );
   }
 
-  async sendCanvas(
-    mouseX: number,
-    mouseY: number,
-    pmouseX: number,
-    pmouseY: number
-  ) {
-    let p = await this.connection.send(
-      'newCanvas',
-      Number(mouseX),
-      Number(mouseY),
-      Number(pmouseX),
-      Number(pmouseY)
-    );
+  sendCanvas(mouseX: number, mouseY: number, pmouseX: number, pmouseY: number) {
+    if (mouseX !== pmouseX || mouseY !== pmouseY) {
+      this.connection.send(
+        'newCanvas',
+        Number(mouseX),
+        Number(mouseY),
+        Number(pmouseX),
+        Number(pmouseY)
+      );
+      console.log(mouseX, mouseY);
+    }
   }
 
   getOtherDrawings(): Observable<number[]> {

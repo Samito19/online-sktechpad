@@ -10,8 +10,9 @@ export class SignalRService {
     connection = new signalR.HubConnectionBuilder()
       .withUrl(
         `http://localhost:5212/${hub}`,
-        signalR.HttpTransportType.LongPolling
+        signalR.HttpTransportType.WebSockets
       )
+      .withAutomaticReconnect()
       .build();
     await connection.start().catch((err) => console.log(err));
     return connection;

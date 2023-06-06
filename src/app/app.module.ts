@@ -8,9 +8,14 @@ import { StoreModule } from '@ngrx/store';
 import { clientIdReducer, messagesReducer } from './chat/chat.reducers';
 import { CanvasComponent } from './canvas/canvas.component';
 import { HttpClientModule } from '@angular/common/http';
+import { HomeComponent } from './home/home.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { SketchCardComponent } from './home/sketch-card/sketch-card.component';
 
 @NgModule({
-  declarations: [AppComponent, ChatComponent, CanvasComponent],
+  declarations: [AppComponent, ChatComponent, CanvasComponent, HomeComponent],
+  providers: [],
+  bootstrap: [AppComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -19,8 +24,8 @@ import { HttpClientModule } from '@angular/common/http';
       messages: messagesReducer,
       clientId: clientIdReducer,
     }),
+    BrowserAnimationsModule,
+    SketchCardComponent,
   ],
-  providers: [],
-  bootstrap: [AppComponent],
 })
 export class AppModule {}

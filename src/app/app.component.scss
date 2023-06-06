@@ -1,11 +1,13 @@
-body {
-  margin: 0;
-}
-
-.app-container{
+.app-container {
   display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  gap: 4rem;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background-color: #4158d0;
+  background-image: linear-gradient(
+    43deg,
+    #4158d0 0%,
+    #c850c0 46%,
+    #ffcc70 100%
+  );
 }
