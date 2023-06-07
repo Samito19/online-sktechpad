@@ -14,7 +14,7 @@ import { Subscription, of } from 'rxjs';
 export class CanvasComponent implements OnInit, OnDestory {
   canvas: p5;
   stringCanvas: string = '';
-  sub$ = of("something we want")
+  sub$ = of('something we want');
   subscription?: Subscription;
   constructor(
     private store: Store,
@@ -30,11 +30,11 @@ export class CanvasComponent implements OnInit, OnDestory {
       })
     );
     this.canvasComponentService.init(param);
-    this.subscription = this.sub$.subscribe(r => console.log(r))
+    this.subscription = this.sub$.subscribe((r) => console.log(r));
   }
-  ngOnDestroy(){
-    if(this.subscription){
-      this.subscription.unsubscribe()
+  ngOnDestroy() {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
     }
   }
   private _drawingUpdateHandler = (drawings: any): void =>
