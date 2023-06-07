@@ -1,13 +1,16 @@
 import { Observable, Subject } from 'rxjs';
-import { SignalRService } from '../signalr.service';
+import { SignalRService } from '../../signalr.service';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Store } from '@ngrx/store';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CanvasService {
   connection: signalR.HubConnection;
+  clientId: string;
+
   private otherDrawingsSubject: Subject<number[]> = new Subject<number[]>();
   private prevDrawingsSubject: Subject<number[][]> = new Subject<number[][]>();
 
@@ -18,20 +21,26 @@ export class CanvasService {
 
   constructor(
     private signalRService: SignalRService,
-    private http: HttpClient
+    private http: HttpClient,
+    private store: Store<{
+      clientId: string;
+    }>
   ) {
     this.http
       .get<number[][]>('http://localhost:5212/getDrawings')
       .subscribe((data) => {
         this.prevDrawingsSubject.next(data);
       });
+    this.store
+      .select('clientId')
+      .subscribe((clientId) => (this.clientId = clientId));
   }
 
   async initCanvasHubConnection() {
     this.connection = await this.signalRService.Connect('canvas');
     console.log('Connection: ', this.connection);
     this.connection.on(
-      'canvasReceived',
+      'newSketchCanvasDrawings',
       (mouseX: number, mouseY: number, pmouseX: number, pmouseY: number) => {
         const drawings: number[] = [mouseX, mouseY, pmouseX, pmouseY];
         this.otherDrawingsSubject.next(drawings);
@@ -39,17 +48,27 @@ export class CanvasService {
     );
   }
 
-  sendCanvas(mouseX: number, mouseY: number, pmouseX: number, pmouseY: number) {
+  async sendCanvas(
+    sketchName: string,
+    mouseX: number,
+    mouseY: number,
+    pmouseX: number,
+    pmouseY: number
+  ) {
     if (mouseX !== pmouseX || mouseY !== pmouseY) {
-      this.connection.send(
-        'newCanvas',
-        Number(mouseX),
-        Number(mouseY),
-        Number(pmouseX),
-        Number(pmouseY)
+      await this.connection?.invoke(
+        'sendSketchCanvasDrawings',
+        sketchName,
+        mouseX,
+        mouseY,
+        pmouseX,
+        pmouseY
       );
-      console.log(mouseX, mouseY);
     }
+  }
+
+  connectToSketchCanvas(sketchName: string) {
+    this.connection.invoke('AddToSketchCanvasGroup', sketchName);
   }
 
   getOtherDrawings(): Observable<number[]> {

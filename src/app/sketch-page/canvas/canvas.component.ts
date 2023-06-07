@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import p5 from 'p5';
 import { CanvasService } from './canvas.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-canvas',
@@ -11,14 +12,23 @@ export class CanvasComponent implements OnInit {
   canvas: p5;
   stringCanvas: string = '';
 
-  constructor(private canvasService: CanvasService) {
-    this.canvasService.initCanvasHubConnection();
-  }
+  constructor(
+    private canvasService: CanvasService,
+    private route: ActivatedRoute
+  ) {}
 
-  ngOnInit(): void {
+  async ngOnInit() {
+    let sketchName: string = this.route.snapshot.paramMap.get('sketchId')!;
+
+    await this.canvasService.initCanvasHubConnection();
+    this.canvasService.connectToSketchCanvas(sketchName);
+
     const sketch = (s: p5) => {
       s.setup = () => {
-        let canvas2 = s.createCanvas(600, 600);
+        let canvas2 = s.createCanvas(
+          s.windowWidth - s.windowWidth * 0.35,
+          s.windowHeight - s.windowHeight * 0.1
+        );
         canvas2.parent('canvas-sketch');
         s.background(255);
         s.strokeWeight(5);
@@ -30,6 +40,7 @@ export class CanvasComponent implements OnInit {
           if (s.mouseButton === s.LEFT) {
             s.line(s.mouseX, s.mouseY, s.pmouseX, s.pmouseY);
             this.canvasService.sendCanvas(
+              sketchName,
               s.mouseX,
               s.mouseY,
               s.pmouseX,

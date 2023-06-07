@@ -1,4 +1,4 @@
-import { SignalRService } from '../signalr.service';
+import { SignalRService } from '../../signalr.service';
 import { Injectable } from '@angular/core';
 import { receiveMessage, setClientId } from './chat.actions';
 import { Store } from '@ngrx/store';
@@ -38,6 +38,10 @@ export class ChatService {
     );
   }
 
+  connecToChatRoom(sketchName: string) {
+    this.connection.invoke('AddToSketchChatGroup', sketchName);
+  }
+
   getMessages(): Observable<{ username: string; content: string }[]> {
     return this.messages$;
   }
@@ -46,7 +50,7 @@ export class ChatService {
     return this.clientId;
   }
 
-  sendMessage(newMessage: string) {
-    this.connection.send('newMessage', this.clientId, newMessage);
+  sendMessage(sketchId: string, newMessage: string) {
+    this.connection.invoke('newMessage', sketchId, this.clientId, newMessage);
   }
 }
