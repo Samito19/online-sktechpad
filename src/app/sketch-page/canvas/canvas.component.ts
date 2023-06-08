@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import p5 from 'p5';
@@ -11,7 +11,7 @@ import { Subscription, of } from 'rxjs';
   templateUrl: './canvas.component.html',
   styleUrls: ['./canvas.component.scss'],
 })
-export class CanvasComponent implements OnInit, OnDestory {
+export class CanvasComponent implements OnInit, OnDestroy {
   canvas: p5;
   stringCanvas: string = '';
   sub$ = of('something we want');
