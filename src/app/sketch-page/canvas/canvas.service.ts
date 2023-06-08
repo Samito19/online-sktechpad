@@ -11,13 +11,13 @@ export class CanvasService {
   connection: signalR.HubConnection;
   clientId: string;
 
-  private otherDrawingsSubject: Subject<number[]> = new Subject<number[]>();
-  private prevDrawingsSubject: Subject<number[][]> = new Subject<number[][]>();
+  // private otherDrawingsSubject: Subject<number[]> = new Subject<number[]>();
+  // private prevDrawingsSubject: Subject<number[][]> = new Subject<number[][]>();
 
-  otherDrawings$: Observable<number[]> =
-    this.otherDrawingsSubject.asObservable();
-  prevDrawings$: Observable<number[][]> =
-    this.prevDrawingsSubject.asObservable();
+  // otherDrawings$: Observable<number[]> =
+  //   this.otherDrawingsSubject.asObservable();
+  // prevDrawings$: Observable<number[][]> =
+  //   this.prevDrawingsSubject.asObservable();
 
   constructor(
     private signalRService: SignalRService,
@@ -26,26 +26,9 @@ export class CanvasService {
       clientId: string;
     }>
   ) {
-    this.http
-      .get<number[][]>('http://localhost:5212/getDrawings')
-      .subscribe((data) => {
-        this.prevDrawingsSubject.next(data);
-      });
     this.store
       .select('clientId')
       .subscribe((clientId) => (this.clientId = clientId));
-  }
-
-  async initCanvasHubConnection() {
-    this.connection = await this.signalRService.Connect('canvas');
-    console.log('Connection: ', this.connection);
-    this.connection.on(
-      'newSketchCanvasDrawings',
-      (mouseX: number, mouseY: number, pmouseX: number, pmouseY: number) => {
-        const drawings: number[] = [mouseX, mouseY, pmouseX, pmouseY];
-        this.otherDrawingsSubject.next(drawings);
-      }
-    );
   }
 
   async sendCanvas(
@@ -71,12 +54,28 @@ export class CanvasService {
     this.connection.invoke('AddToSketchCanvasGroup', sketchName);
   }
 
-  getOtherDrawings(): Observable<number[]> {
-    return this.otherDrawings$;
+  getOtherDrawings(): void {
+    this.signalRService.Connect('canvas');
+    this.connection.on(
+      'newSketchCanvasDrawings',
+      this.newSketchConnectionHandler
+    );
   }
 
+  newSketchConnectionHandler = (
+    mouseX: number,
+    mouseY: number,
+    pmouseX: number,
+    pmouseY: number
+  ) => {
+    const drawings: number[] = [mouseX, mouseY, pmouseX, pmouseY];
+    // dispatch an action with the payload
+    // this.otherDrawingsSubject.next(drawings);
+  };
+
+  //TODO Extract to canvas api service - this returned object can be saved in a state object using a reducer that handles getPrevDrawingsSuccess
   getPrevDrawings(): Observable<number[][]> {
-    return this.prevDrawings$;
+    return this.http.get<number[][]>('http://localhost:5212/getDrawings');
   }
 
   clearCanvas() {

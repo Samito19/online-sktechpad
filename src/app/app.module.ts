@@ -16,6 +16,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SketchCardComponent } from './home/sketch-card/sketch-card.component';
 import { SketchPageComponent } from './sketch-page/sketch-page.component';
 import { ControlsComponent } from './sketch-page/controls/controls.component';
+import { EffectsModule } from '@ngrx/effects';
+import { CanvasEffects } from './effect/canvas.effect';
 
 @NgModule({
   declarations: [
@@ -38,6 +40,7 @@ import { ControlsComponent } from './sketch-page/controls/controls.component';
     }),
     BrowserAnimationsModule,
     SketchCardComponent,
+    EffectsModule.forRoot([CanvasEffects]),
   ],
 })
 export class AppModule {}
