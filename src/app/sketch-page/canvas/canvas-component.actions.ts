@@ -1,14 +1,19 @@
 import { createAction, props } from '@ngrx/store';
+import {
+  CanvasConnectionPrereq,
+  CanvasDrawing,
+} from 'src/app/interfaces/canvas/canvas.interfaces';
 
-export interface CanvasConnectionPrereq {
-  canvasName: string;
-  // Once we have access control
-  userId?: string;
-}
 export enum CanvasActions {
-  connectCanvasName = `[Canvas Actions] connect to canvas by name`,
+  connectToCanvasByName = `[Canvas Actions] connect to canvas by name`,
+  drawOtherRealTimeDrawings = `[Canvas Actions] receive other real time drawings`,
 }
-export const connectCanvasName = createAction(
-  CanvasActions.connectCanvasName,
+export const connectToCanvasByName = createAction(
+  CanvasActions.connectToCanvasByName,
   props<CanvasConnectionPrereq>()
+);
+
+export const drawOtherRealTimeDrawings = createAction(
+  CanvasActions.drawOtherRealTimeDrawings,
+  props<CanvasDrawing>()
 );

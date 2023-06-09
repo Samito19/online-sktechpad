@@ -3,6 +3,8 @@ import { SignalRService } from '../../signalr.service';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
+import { drawOtherRealTimeDrawings } from './canvas-component.actions';
+import { CanvasDrawing } from 'src/app/interfaces/canvas/canvas.interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -10,14 +12,6 @@ import { Store } from '@ngrx/store';
 export class CanvasService {
   connection: signalR.HubConnection;
   clientId: string;
-
-  // private otherDrawingsSubject: Subject<number[]> = new Subject<number[]>();
-  // private prevDrawingsSubject: Subject<number[][]> = new Subject<number[][]>();
-
-  // otherDrawings$: Observable<number[]> =
-  //   this.otherDrawingsSubject.asObservable();
-  // prevDrawings$: Observable<number[][]> =
-  //   this.prevDrawingsSubject.asObservable();
 
   constructor(
     private signalRService: SignalRService,
@@ -50,27 +44,27 @@ export class CanvasService {
     }
   }
 
-  connectToSketchCanvas(sketchName: string) {
-    this.connection.invoke('AddToSketchCanvasGroup', sketchName);
+  async connectToSketchCanvas(sketchName: string) {
+    this.connection = await this.signalRService.Connect('canvas');
+    await this.connection.invoke('AddToSketchCanvasGroup', sketchName);
   }
 
-  getOtherDrawings(): void {
-    this.signalRService.Connect('canvas');
+  receiveOtherRealTimeDrawings(): void {
     this.connection.on(
       'newSketchCanvasDrawings',
-      this.newSketchConnectionHandler
+      this.handleOtherRealTimeDrawings
     );
   }
 
-  newSketchConnectionHandler = (
+  handleOtherRealTimeDrawings = (
     mouseX: number,
     mouseY: number,
     pmouseX: number,
     pmouseY: number
   ) => {
-    const drawings: number[] = [mouseX, mouseY, pmouseX, pmouseY];
+    const drawing: CanvasDrawing = { mouseX, mouseY, pmouseX, pmouseY };
     // dispatch an action with the payload
-    // this.otherDrawingsSubject.next(drawings);
+    this.store.dispatch(drawOtherRealTimeDrawings(drawing));
   };
 
   //TODO Extract to canvas api service - this returned object can be saved in a state object using a reducer that handles getPrevDrawingsSuccess
@@ -79,10 +73,6 @@ export class CanvasService {
   }
 
   clearCanvas() {
-    this.http
-      .get<any>('http://localhost:5212/clearDrawings')
-      .subscribe((data) => {
-        console.log(data);
-      });
+    this.http.get<any>('http://localhost:5212/clearDrawings');
   }
 }

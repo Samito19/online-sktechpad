@@ -26,7 +26,7 @@ export class ChatService {
   }
 
   async initChatHubConnection() {
-    this.connection = await this.signalRService.Connect('chat');
+    await this.signalRService.Connect('chat');
     this.store.dispatch(
       setClientId({ clientId: this.connection.connectionId! })
     );

@@ -15,8 +15,9 @@ export class SignalRService {
       )
       .withAutomaticReconnect()
       .build();
-    await connection.start().catch((err) => console.log(err));
-    this.connections.push(connection);
-    console.log('number of connections ', this.connections.length);
+    await connection.start().catch((err) => console.log('Conn Error:', err));
+    this.connections?.push(connection);
+    console.log('number of connections ', this.connections?.length);
+    return connection;
   }
 }

@@ -23,6 +23,7 @@
     "@microsoft/signalr": "^7.0.5",
     "@ngrx/effects": "^16.0.1",
     "@ngrx/store": "^16.0.1",
+    "@ngrx/store-devtools": "^16.0.1",
     "@types/node": "^20.2.5",
     "@types/p5": "^1.6.2",
     "circular-json": "^0.5.9",

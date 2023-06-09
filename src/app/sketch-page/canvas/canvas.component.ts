@@ -1,20 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import p5 from 'p5';
-import { connectCanvasName } from './canvas-component.actions';
+import { connectToCanvasByName } from './canvas-component.actions';
 import { CanvasComponentService } from './canvas.component.service';
+import { CanvasDrawing } from 'src/app/interfaces/canvas/canvas.interfaces';
 
 @Component({
   selector: 'app-canvas',
   templateUrl: './canvas.component.html',
   styleUrls: ['./canvas.component.scss'],
 })
-export class CanvasComponent implements OnInit {
+export class CanvasComponent implements OnInit, OnDestroy {
   canvas: p5;
 
   constructor(
-    private store: Store,
+    private store: Store<{ newDrawing: CanvasDrawing }>,
     private canvasComponentService: CanvasComponentService,
     private route: ActivatedRoute
   ) {}
@@ -22,17 +23,14 @@ export class CanvasComponent implements OnInit {
   async ngOnInit() {
     const param = this.route.snapshot.paramMap.get('sketchId')!;
     this.store.dispatch(
-      connectCanvasName({
+      connectToCanvasByName({
         canvasName: param,
       })
     );
     this.canvasComponentService.init(param);
   }
 
-  private _drawingUpdateHandler = (drawings: any): void =>
-    drawings.forEach((drawing: number[]) =>
-      this.canvas.line(drawing[0], drawing[1], drawing[2], drawing[3])
-    );
-  private _handleOtherDrawings = (postions: any) =>
-    this.canvas.line(postions[0], postions[1], postions[2], postions[3]);
+  ngOnDestroy() {
+    this.canvasComponentService.disconnect();
+  }
 }

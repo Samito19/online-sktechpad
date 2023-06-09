@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -18,6 +18,9 @@ import { SketchPageComponent } from './sketch-page/sketch-page.component';
 import { ControlsComponent } from './sketch-page/controls/controls.component';
 import { EffectsModule } from '@ngrx/effects';
 import { CanvasEffects } from './effect/canvas.effect';
+import { CanvasComponentService } from './sketch-page/canvas/canvas.component.service';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { newDrawingReducer } from './reducer/canvas.reducer';
 
 @NgModule({
   declarations: [
@@ -28,7 +31,7 @@ import { CanvasEffects } from './effect/canvas.effect';
     SketchPageComponent,
     ControlsComponent,
   ],
-  providers: [],
+  providers: [CanvasComponentService],
   bootstrap: [AppComponent],
   imports: [
     BrowserModule,
@@ -37,10 +40,16 @@ import { CanvasEffects } from './effect/canvas.effect';
     StoreModule.forRoot({
       messages: messagesReducer,
       clientId: clientIdReducer,
+      newDrawing: newDrawingReducer,
     }),
     BrowserAnimationsModule,
     SketchCardComponent,
     EffectsModule.forRoot([CanvasEffects]),
+    StoreDevtoolsModule.instrument({
+      maxAge: 25,
+      logOnly: !isDevMode(),
+      trace: true,
+    }),
   ],
 })
 export class AppModule {}
