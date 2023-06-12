@@ -1,7 +1,6 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ChatService } from './chat.service';
-import { ActivatedRoute } from '@angular/router';
+import { SketchPageService } from '../sketch-page.service';
 
 @Component({
   selector: 'app-chat',
@@ -9,28 +8,18 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./chat.component.scss'],
 })
 export class ChatComponent implements OnInit {
-  @ViewChild('newMessage') input: ElementRef;
+  newMessage = '';
 
   messages$: Observable<{ username: string; content: string }[]>;
 
-  constructor(private chatService: ChatService, private route: ActivatedRoute) {
-    this.messages$ = this.chatService.getMessages();
-  }
+  constructor(private sketchPageService: SketchPageService) {}
 
-  async ngOnInit() {
-    await this.chatService.initChatHubConnection();
-    this.chatService.connecToChatRoom(
-      this.route.snapshot.paramMap.get('sketchId')!
-    );
-  }
+  async ngOnInit() {}
 
-  sendMessage(newMessage: string) {
-    if (newMessage) {
-      this.chatService.sendMessage(
-        this.route.snapshot.paramMap.get('sketchId')!,
-        newMessage
-      );
-      this.input.nativeElement.value = '';
+  sendMessage() {
+    if (this.newMessage) {
+      this.sketchPageService.sendMessage(this.newMessage);
+      this.newMessage = '';
     }
   }
 }

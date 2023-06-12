@@ -1,14 +1,16 @@
 import { NgModule, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
-import { AppRoutingModule } from './app-routing.module';
+//import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ChatComponent } from './sketch-page/chat/chat.component';
 import { StoreModule } from '@ngrx/store';
-import {
-  clientIdReducer,
-  messagesReducer,
-} from './sketch-page/chat/chat.reducers';
+import { RouterModule } from '@angular/router';
+
+// import {
+//   clientIdReducer,
+//   messagesReducer,
+// } from './sketch-page/chat/chat.reducers';
 import { CanvasComponent } from './sketch-page/canvas/canvas.component';
 import { HttpClientModule } from '@angular/common/http';
 import { HomeComponent } from './home/home.component';
@@ -17,10 +19,11 @@ import { SketchCardComponent } from './home/sketch-card/sketch-card.component';
 import { SketchPageComponent } from './sketch-page/sketch-page.component';
 import { ControlsComponent } from './sketch-page/controls/controls.component';
 import { EffectsModule } from '@ngrx/effects';
-import { CanvasEffects } from './effect/canvas.effect';
-import { CanvasComponentService } from './sketch-page/canvas/canvas.component.service';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { newDrawingReducer } from './reducer/canvas.reducer';
+import { sketchPageState } from './reducer/sketch-page.reducer';
+import { SketchPageService } from './sketch-page/sketch-page.service';
+import { FormsModule } from '@angular/forms';
+import { SketchEffects } from './effect/sketch.effects';
 
 @NgModule({
   declarations: [
@@ -31,20 +34,23 @@ import { newDrawingReducer } from './reducer/canvas.reducer';
     SketchPageComponent,
     ControlsComponent,
   ],
-  providers: [CanvasComponentService],
+  providers: [SketchPageService],
   bootstrap: [AppComponent],
   imports: [
     BrowserModule,
-    AppRoutingModule,
+    FormsModule,
     HttpClientModule,
+    RouterModule.forRoot([
+      { path: '', redirectTo: 'home', pathMatch: 'full' },
+      { path: 'home', component: HomeComponent },
+      { path: ':sketchId', component: SketchPageComponent },
+    ]),
     StoreModule.forRoot({
-      messages: messagesReducer,
-      clientId: clientIdReducer,
-      newDrawing: newDrawingReducer,
+      sketchPageState,
     }),
     BrowserAnimationsModule,
     SketchCardComponent,
-    EffectsModule.forRoot([CanvasEffects]),
+    EffectsModule.forRoot([SketchEffects]),
     StoreDevtoolsModule.instrument({
       maxAge: 25,
       logOnly: !isDevMode(),

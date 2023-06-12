@@ -1,5 +1,5 @@
 export interface CanvasConnectionPrereq {
-  canvasName: string;
+  sketchName: string;
   // Once we have access control
   userId?: string;
 }

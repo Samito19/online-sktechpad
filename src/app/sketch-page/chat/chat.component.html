@@ -3,11 +3,8 @@
     {{ message.username }} : {{ message.content }}
   </div>
   <div class="chat-container-input">
-    <input #newMessage class="chat-container-input-field" />
-    <button
-      class="chat-container-input-button"
-      (click)="sendMessage(newMessage.value)"
-    >
+    <input [(ngModel)]="newMessage" class="chat-container-input-field" />
+    <button class="chat-container-input-button" (click)="sendMessage()">
       Send
     </button>
   </div>

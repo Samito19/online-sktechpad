@@ -1,10 +1,10 @@
 import { Observable, Subject } from 'rxjs';
-import { SignalRService } from '../../signalr.service';
+import { SignalRService } from '../signalr.service';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
-import { drawOtherRealTimeDrawings } from './canvas-component.actions';
-import { CanvasDrawing } from 'src/app/interfaces/canvas/canvas.interfaces';
+import { drawOtherRealTimeDrawings } from '../action/sketch.actions';
+import { CanvasDrawing } from 'src/app/model/canvas/canvas.models';
 
 @Injectable({
   providedIn: 'root',
