@@ -10,7 +10,7 @@ export const sendDrawingToHub = createAction(
   props<CanvasDrawing>()
 );
 
-export const drawOtherRealTimeDrawings = createAction(
+export const receiveRealTimeDrawings = createAction(
   CanvasActions.drawOtherRealTimeDrawings,
   props<CanvasDrawing>()
 );

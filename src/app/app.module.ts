@@ -43,7 +43,7 @@ import { SketchEffects } from './effect/sketch.effects';
     RouterModule.forRoot([
       { path: '', redirectTo: 'home', pathMatch: 'full' },
       { path: 'home', component: HomeComponent },
-      { path: ':sketchId', component: SketchPageComponent },
+      { path: 'sketch/:sketchId', component: SketchPageComponent },
     ]),
     StoreModule.forRoot({
       sketchPageState,

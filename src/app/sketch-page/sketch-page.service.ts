@@ -1,53 +1,47 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { CanvasDrawing } from '../view/canvas.view';
-import { connectToCanvasByName } from '../action/sketch.actions';
-import { connectToSketchChatroom } from '../action/sketch.actions';
-import { sendDrawingToHub } from '../action/canvas.actions';
-import { SketchPageState } from '../state/sketch-page.state';
 import { sendChatMessage } from '../action/chat.actions';
-import { SignalRHubConnections, SignalRService } from '../signalr.service';
+import {
+  connectToCanvasByName,
+  connectToSketchChatroom,
+} from '../action/sketch.actions';
+import { SketchPageState } from '../state/sketch-page.state';
+import { CanvasDrawing } from '../view/canvas.view';
+import { CanvasService } from '../service/canvas.service';
 
 @Injectable()
 export class SketchPageService {
   sketchName: string;
-  hubConnections: SignalRHubConnections;
 
   constructor(
     private route: ActivatedRoute,
     private store: Store<SketchPageState>,
-    private signalRService: SignalRService
-  ) {
-    const sketchName = this.route.snapshot.paramMap.get('sketchId')!;
-    this.sketchName = sketchName;
-  }
+    private canvasService: CanvasService
+  ) {}
 
   init = () => {
+    const sketchName = this.route.children[0].snapshot.params['sketchId'] ?? 0;
+
+    this.sketchName = sketchName;
+    console.log(this.route);
     this.store.dispatch(
       connectToCanvasByName({
-        sketchName: 'test',
+        sketchName,
       })
     );
     this.store.dispatch(
       connectToSketchChatroom({
-        sketchName: 'test',
+        sketchName,
       })
     );
-    this.hubConnections = this.signalRService.getAllHubConnections();
-    console.log(this.hubConnections);
-    this.hubConnections.chat?.on(
-      'messageReceived',
-      (username, messageContent) => {
-        console.log(`${username} : ${messageContent}`);
-      }
-    );
+    this.canvasService.init(sketchName);
   };
 
   sendMessage(messageContent: string) {
     this.store.dispatch(
       sendChatMessage({
-        sketchName: 'test',
+        sketchName: this.sketchName,
         username: 'Samsoumite',
         content: messageContent,
       })
@@ -58,9 +52,7 @@ export class SketchPageService {
     console.log(message);
   }
 
-  sendDrawing = (drawing: CanvasDrawing) => {
-    this.store.dispatch(sendDrawingToHub(drawing));
-  };
+  sendDrawing = (drawing: CanvasDrawing) => {};
 
   // receiveDrawing = () => {
   //   const newDrawing$ = this.store.select('newDrawing');

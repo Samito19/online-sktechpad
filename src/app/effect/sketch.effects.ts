@@ -1,3 +1,7 @@
+import {
+  sendDrawingToHub,
+  receiveRealTimeDrawings,
+} from './../action/canvas.actions';
 import { SignalRService } from '../signalr.service';
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
@@ -8,13 +12,15 @@ import {
 } from '../action/sketch.actions';
 import { SignalRHubs } from '../model/hub/hub.models';
 import { sendChatMessage } from '../action/chat.actions';
-import { UserMessageDto } from '../model/network/user.model';
+import { IUserMessageDto } from '../model/network/user.model';
+import { CanvasService } from '../service/canvas.service';
 
 @Injectable()
 export class SketchEffects {
   constructor(
     private actions$: Actions,
-    private signalRService: SignalRService
+    private signalRService: SignalRService,
+    private canvasService: CanvasService
   ) {}
 
   connectToCanvasDataSignalr = createEffect(
@@ -35,11 +41,10 @@ export class SketchEffects {
     () =>
       this.actions$.pipe(
         ofType(connectToSketchChatroom),
-        tap(async (action) => {
-          console.log(action);
+        tap(async ({ type, ...payload }) => {
           await this.signalRService.Connect(
             SignalRHubs.Chat,
-            action.sketchName
+            payload.sketchName
           );
         })
       ),
@@ -50,16 +55,31 @@ export class SketchEffects {
     () =>
       this.actions$.pipe(
         ofType(sendChatMessage),
-        tap(async (message: UserMessageDto) => {
-          const chatHubConnection = this.signalRService.getHubConnection(
-            SignalRHubs.Chat
-          );
-          chatHubConnection?.invoke(
-            'newMessage',
-            message.username,
-            message.content,
-            message.sketchName
-          );
+        tap(async ({ type, ...payload }) => {
+          this.signalRService.sendPayloadToHub(SignalRHubs.Chat, payload);
+        })
+      ),
+    { dispatch: false }
+  );
+
+  sendDrawingToHub = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(sendDrawingToHub),
+        tap(async ({ type, ...payload }) => {
+          this.signalRService.sendPayloadToHub(SignalRHubs.Canvas, payload);
+        })
+      ),
+    { dispatch: false }
+  );
+
+  receiveRealTimeDrawings = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(receiveRealTimeDrawings),
+        tap(({ type, ...payload }) => {
+          console.log('payload in effect: ', payload);
+          this.canvasService.handleOtherRealTimeDrawings(payload);
         })
       ),
     { dispatch: false }
