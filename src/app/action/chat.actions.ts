@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { IUserMessageDto } from '../model/network/user.model';
+import { UserMessageDto } from '../model/network/user.model';
 
 export enum ChatActions {
   getChatMessage = `[Chat Actions] get chat message`,
@@ -7,9 +7,9 @@ export enum ChatActions {
 }
 export const getChatMessage = createAction(
   ChatActions.getChatMessage,
-  props<IUserMessageDto>()
+  props<UserMessageDto>()
 );
 export const sendChatMessage = createAction(
   ChatActions.sendChatMessage,
-  props<IUserMessageDto>()
+  props<UserMessageDto>()
 );

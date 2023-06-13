@@ -45,8 +45,12 @@ export class SignalRService {
       case SignalRHubs.Chat:
         connection?.invoke('AddToSketchChatGroup', sketchName);
         this.connections.chat = connection;
-        connection.on('messageReceived', (payload) =>
-          this.store.dispatch(getChatMessage(payload))
+        connection.on(
+          'messageReceived',
+          (username: string, content: string) => {
+            const userMessagePayload: UserMessageDto = { username, content };
+            this.store.dispatch(getChatMessage(userMessagePayload));
+          }
         );
         break;
     }
@@ -54,11 +58,15 @@ export class SignalRService {
 
   sendPayloadToHub<T>(
     hub: SignalRHubs,
-    payload: IUserMessageDto | CanvasDrawing
+    payload: UserMessageDto | CanvasDrawing
   ) {
-    console.log(payload);
-    if (hub === SignalRHubs.Chat && payload instanceof UserMessageDto) {
-      const { username, content, sketchName } = payload;
+    if (
+      hub === SignalRHubs.Chat &&
+      (payload as UserMessageDto)?.username &&
+      (payload as UserMessageDto)?.content &&
+      (payload as UserMessageDto)?.sketchName
+    ) {
+      const { username, content, sketchName } = payload as UserMessageDto;
       this.connections[hub]?.invoke(
         'newMessage',
         username,
@@ -71,7 +79,6 @@ export class SignalRService {
       (payload as CanvasDrawing)?.mouseY
     ) {
       const { mouseX, mouseY, pmouseX, pmouseY } = payload as CanvasDrawing;
-      console.log(this.connections[hub]);
       this.connections[hub]?.invoke(
         'SendSketchCanvasDrawings',
         this.sketchName,

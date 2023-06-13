@@ -6,9 +6,8 @@ import {
   connectToCanvasByName,
   connectToSketchChatroom,
 } from '../action/sketch.actions';
-import { SketchPageState } from '../state/sketch-page.state';
-import { CanvasDrawing } from '../view/canvas.view';
 import { CanvasService } from '../service/canvas.service';
+import { SketchPageState } from '../state/sketch-page.state';
 
 @Injectable()
 export class SketchPageService {
@@ -24,7 +23,6 @@ export class SketchPageService {
     const sketchName = this.route.children[0].snapshot.params['sketchId'] ?? 0;
 
     this.sketchName = sketchName;
-    console.log(this.route);
     this.store.dispatch(
       connectToCanvasByName({
         sketchName,
@@ -38,6 +36,10 @@ export class SketchPageService {
     this.canvasService.init(sketchName);
   };
 
+  disconnect = () => {
+    this.canvasService.disconnect();
+  };
+
   sendMessage(messageContent: string) {
     this.store.dispatch(
       sendChatMessage({
@@ -48,14 +50,5 @@ export class SketchPageService {
     );
   }
 
-  receiveMessage(message: string) {
-    console.log(message);
-  }
-
-  sendDrawing = (drawing: CanvasDrawing) => {};
-
-  // receiveDrawing = () => {
-  //   const newDrawing$ = this.store.select('newDrawing');
-  //   return newDrawing$;
-  // };
+  receiveMessage(message: string) {}
 }

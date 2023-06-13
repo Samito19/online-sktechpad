@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { SketchPageService } from './sketch-page.service';
 
 @Component({
@@ -6,9 +6,13 @@ import { SketchPageService } from './sketch-page.service';
   templateUrl: './sketch-page.component.html',
   styleUrls: ['./sketch-page.component.scss'],
 })
-export class SketchPageComponent implements OnInit {
+export class SketchPageComponent implements OnInit, OnDestroy {
   constructor(public SketchPageService: SketchPageService) {}
   ngOnInit() {
     this.SketchPageService.init();
+  }
+
+  ngOnDestroy() {
+    this.SketchPageService.disconnect();
   }
 }

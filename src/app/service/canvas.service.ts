@@ -2,15 +2,17 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import p5 from 'p5';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { sendDrawingToHub } from '../action/canvas.actions';
 import { CanvasDrawing } from '../view/canvas.view';
+import { selectSketchPageStateNewDrawing } from '../selector/sketch-page.selectors';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CanvasService {
-  clientId: string;
+  newDrawing$: Observable<CanvasDrawing | null>;
+  newDrawingSubscribtion: Subscription;
   s: p5;
   canvas: p5;
 
@@ -20,13 +22,20 @@ export class CanvasService {
       clientId: string;
     }>
   ) {
-    // this.store
-    //   .select('clientId')
-    //   .subscribe((clientId) => (this.clientId = clientId));
+    this.newDrawing$ = this.store.select(selectSketchPageStateNewDrawing);
   }
 
   init = (id: string) => {
     this.canvas = new p5(this.sketch);
+    this.newDrawing$.subscribe((drawingPayload: CanvasDrawing | null) => {
+      if (drawingPayload) {
+        this.handleOtherRealTimeDrawings(drawingPayload);
+      }
+    });
+  };
+
+  disconnect = () => {
+    this.newDrawingSubscribtion.unsubscribe();
   };
 
   sketch = (s: p5) => {

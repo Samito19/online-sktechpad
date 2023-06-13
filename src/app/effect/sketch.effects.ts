@@ -1,19 +1,18 @@
-import {
-  sendDrawingToHub,
-  receiveRealTimeDrawings,
-} from './../action/canvas.actions';
-import { SignalRService } from '../signalr.service';
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { tap } from 'rxjs';
+import { getChatMessage, sendChatMessage } from '../action/chat.actions';
 import {
   connectToCanvasByName,
   connectToSketchChatroom,
 } from '../action/sketch.actions';
 import { SignalRHubs } from '../model/hub/hub.models';
-import { sendChatMessage } from '../action/chat.actions';
-import { IUserMessageDto } from '../model/network/user.model';
 import { CanvasService } from '../service/canvas.service';
+import { SignalRService } from '../signalr.service';
+import {
+  receiveRealTimeDrawings,
+  sendDrawingToHub,
+} from './../action/canvas.actions';
 
 @Injectable()
 export class SketchEffects {
@@ -78,8 +77,7 @@ export class SketchEffects {
       this.actions$.pipe(
         ofType(receiveRealTimeDrawings),
         tap(({ type, ...payload }) => {
-          console.log('payload in effect: ', payload);
-          this.canvasService.handleOtherRealTimeDrawings(payload);
+          //this.canvasService.handleOtherRealTimeDrawings(payload);
         })
       ),
     { dispatch: false }
