@@ -1,0 +1,19 @@
+.controls-container {
+  display: flex;
+  padding: 0.6rem;
+  gap: 1rem;
+  flex-direction: column;
+  height: fit-content;
+  width: fit-content;
+  background-color: rgb(47, 32, 144);
+  position: absolute;
+  top: 40%;
+  left: 1%;
+  border-radius: 5%;
+  cursor: pointer;
+}
+
+.controls-icon {
+  height: 2rem;
+  width: 2rem;
+}

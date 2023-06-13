@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { sendChatMessage } from '../action/chat.actions';
+import { sendChatMessage } from '../../action/chat.actions';
 import {
   connectToCanvasByName,
   connectToSketchChatroom,
-} from '../action/sketch.actions';
-import { CanvasService } from '../service/canvas.service';
-import { SketchPageState } from '../state/sketch-page.state';
+} from '../../action/sketch.actions';
+import { CanvasService } from '../../service/canvas.service';
+import { SketchPageState } from '../../state/sketch-page.state';
 
 @Injectable()
 export class SketchPageService {

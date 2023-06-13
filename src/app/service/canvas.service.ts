@@ -25,6 +25,10 @@ export class CanvasService {
     this.newDrawing$ = this.store.select(selectSketchPageStateNewDrawing);
   }
 
+  windowResized = () => {
+    this.s.resizeCanvas(this.s.windowWidth, this.s.windowHeight);
+  };
+
   init = (id: string) => {
     this.canvas = new p5(this.sketch);
     this.newDrawing$.subscribe((drawingPayload: CanvasDrawing | null) => {
@@ -46,11 +50,11 @@ export class CanvasService {
     this.s = s;
     this.s.setup = () => {
       let canvas2 = this.s.createCanvas(
-        this.s.windowWidth - this.s.windowWidth * 0.35,
-        this.s.windowHeight - this.s.windowHeight * 0.1
+        this.s.windowWidth,
+        this.s.windowHeight
       );
       canvas2.parent('canvas-sketch');
-      this.s.background(255);
+      canvas2.style;
       this.s.strokeWeight(5);
       this.s.stroke(this.s.color(148, 0, 211));
     };

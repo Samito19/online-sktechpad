@@ -1,6 +1,8 @@
 <div class="chat-container">
-  <div *ngFor="let message of messages$ | async">
-    {{ message.username }} : {{ message.content }}
+  <header class="chat-header">Chat Messages</header>
+  <div class="chat-message" *ngFor="let message of messages$ | async">
+    <span class="chat-username">{{ message.username }}</span>
+    <span class="chat-message-bubble">{{ message.content }}</span>
   </div>
   <div class="chat-container-input">
     <input [(ngModel)]="newMessage" class="chat-container-input-field" />
