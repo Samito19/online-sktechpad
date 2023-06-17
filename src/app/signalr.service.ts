@@ -66,13 +66,7 @@ export class SignalRService {
       (payload as UserMessageDto)?.content &&
       (payload as UserMessageDto)?.sketchName
     ) {
-      const { username, content, sketchName } = payload as UserMessageDto;
-      this.connections[hub]?.invoke(
-        'newMessage',
-        username,
-        content,
-        sketchName
-      );
+      this.connections[hub]?.invoke('newMessage', payload);
     } else if (
       hub === SignalRHubs.Canvas &&
       (payload as CanvasDrawing)?.mouseX &&

@@ -55,12 +55,11 @@ export class SketchPageService {
   };
 
   sendMessage(messageContent: string) {
-    this.store.dispatch(
-      sendChatMessage({
-        sketchName: this.sketchName,
-        username: 'Samsoumite',
-        content: messageContent,
-      })
-    );
+    const newUserMessageDto: UserMessageDto = {
+      sketchName: this.sketchName,
+      username: 'Samsoumite',
+      content: messageContent,
+    };
+    this.store.dispatch(sendChatMessage(newUserMessageDto));
   }
 }
