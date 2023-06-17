@@ -12,7 +12,5 @@ export class SketchPageComponent implements OnInit, OnDestroy {
     this.SketchPageService.init();
   }
 
-  ngOnDestroy() {
-    this.SketchPageService.disconnect();
-  }
+  ngOnDestroy() {}
 }

@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { CanvasService } from 'src/app/service/canvas.service';
 
 @Component({
   selector: 'app-canvas',
@@ -6,9 +7,13 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
   styleUrls: ['./canvas.component.scss'],
 })
 export class CanvasComponent implements OnInit, OnDestroy {
-  constructor() {}
+  constructor(private canvasService: CanvasService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.canvasService.init();
+  }
 
-  ngOnDestroy() {}
+  ngOnDestroy() {
+    this.canvasService.disconnect();
+  }
 }

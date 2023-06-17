@@ -5,41 +5,42 @@ import p5 from 'p5';
 import { Observable, Subscription } from 'rxjs';
 import { sendDrawingToHub } from '../action/canvas.actions';
 import { CanvasDrawing } from '../view/canvas.view';
-import { selectSketchPageStateNewDrawing } from '../selector/sketch-page.selectors';
+import { SketchPageService } from './sketch-page.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CanvasService {
   newDrawing$: Observable<CanvasDrawing | null>;
-  newDrawingSubscribtion: Subscription;
+  newDrawingSubscription: Subscription;
   s: p5;
   canvas: p5;
 
   constructor(
     private http: HttpClient,
-    private store: Store<{
-      clientId: string;
-    }>
+    private store: Store,
+    private sketchPageService: SketchPageService
   ) {
-    this.newDrawing$ = this.store.select(selectSketchPageStateNewDrawing);
+    this.newDrawing$ = this.sketchPageService.newDrawing$;
   }
 
   windowResized = () => {
     this.s.resizeCanvas(this.s.windowWidth, this.s.windowHeight);
   };
 
-  init = (id: string) => {
+  init = () => {
     this.canvas = new p5(this.sketch);
-    this.newDrawing$.subscribe((drawingPayload: CanvasDrawing | null) => {
-      if (drawingPayload) {
-        this.handleOtherRealTimeDrawings(drawingPayload);
+    this.newDrawingSubscription = this.newDrawing$.subscribe(
+      (drawingPayload: CanvasDrawing | null) => {
+        if (drawingPayload) {
+          this.handleOtherRealTimeDrawings(drawingPayload);
+        }
       }
-    });
+    );
   };
 
   disconnect = () => {
-    this.newDrawingSubscribtion.unsubscribe();
+    this.newDrawingSubscription.unsubscribe();
   };
 
   sketch = (s: p5) => {
