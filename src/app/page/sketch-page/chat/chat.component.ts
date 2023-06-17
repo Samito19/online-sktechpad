@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { SketchPageService } from '../sketch-page.service';
+import { SketchPageService } from '../../../service/sketch-page.service';
 import { UserMessageDto } from 'src/app/model/network/user.model';
-import { SketchPageState } from 'src/app/state/sketch-page.state';
 import { Store, select } from '@ngrx/store';
 import { selectSketchPageStateMessages } from 'src/app/selector/sketch-page.selectors';
 
@@ -14,13 +13,10 @@ import { selectSketchPageStateMessages } from 'src/app/selector/sketch-page.sele
 export class ChatComponent implements OnInit {
   newMessage = '';
   messages$: Observable<UserMessageDto[]>;
-  constructor(
-    private store: Store<SketchPageState>,
-    private sketchPageService: SketchPageService
-  ) {}
+  constructor(private sketchPageService: SketchPageService) {}
 
   ngOnInit() {
-    this.messages$ = this.store.pipe(select(selectSketchPageStateMessages));
+    this.messages$ = this.sketchPageService.messages$;
   }
 
   sendMessage() {

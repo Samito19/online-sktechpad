@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { SketchPageService } from './sketch-page.service';
+import { SketchPageService } from '../../service/sketch-page.service';
 
 @Component({
   selector: 'app-sketch-page',

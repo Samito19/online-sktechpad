@@ -1,4 +1,4 @@
-import { getChatMessage } from './../action/chat.actions';
+import { getChatMessage, getPrevMessages } from './../action/chat.actions';
 import { createReducer, on } from '@ngrx/store';
 import { receiveRealTimeDrawings } from '../action/canvas.actions';
 import { SketchPageState, initialPageState } from '../state/sketch-page.state';
@@ -6,5 +6,6 @@ import { SketchPageState, initialPageState } from '../state/sketch-page.state';
 export const sketchPageState = createReducer(
   initialPageState,
   on(receiveRealTimeDrawings, SketchPageState.handlesDrawEvent),
-  on(getChatMessage, SketchPageState.handlesNewMessageEvent)
+  on(getChatMessage, SketchPageState.handlesNewMessageEvent),
+  on(getPrevMessages, SketchPageState.handlesPrevMessagesEvent)
 );

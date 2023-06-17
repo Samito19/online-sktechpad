@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { tap } from 'rxjs';
-import { getChatMessage, sendChatMessage } from '../action/chat.actions';
+import { sendChatMessage } from '../action/chat.actions';
 import {
   connectToCanvasByName,
   connectToSketchChatroom,
@@ -9,10 +9,7 @@ import {
 import { SignalRHubs } from '../model/hub/hub.models';
 import { CanvasService } from '../service/canvas.service';
 import { SignalRService } from '../signalr.service';
-import {
-  receiveRealTimeDrawings,
-  sendDrawingToHub,
-} from './../action/canvas.actions';
+import { sendDrawingToHub } from './../action/canvas.actions';
 
 @Injectable()
 export class SketchEffects {
@@ -72,14 +69,14 @@ export class SketchEffects {
     { dispatch: false }
   );
 
-  receiveRealTimeDrawings = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(receiveRealTimeDrawings),
-        tap(({ type, ...payload }) => {
-          //this.canvasService.handleOtherRealTimeDrawings(payload);
-        })
-      ),
-    { dispatch: false }
-  );
+  // receiveRealTimeDrawings = createEffect(
+  //   () =>
+  //     this.actions$.pipe(
+  //       ofType(receiveRealTimeDrawings),
+  //       tap(({ type, ...payload }) => {
+  //         //this.canvasService.handleOtherRealTimeDrawings(payload);
+  //       })
+  //     ),
+  //   { dispatch: false }
+  // );
 }

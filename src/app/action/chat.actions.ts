@@ -1,10 +1,19 @@
 import { createAction, props } from '@ngrx/store';
-import { UserMessageDto } from '../model/network/user.model';
+import {
+  PrevUserMessagesActionPayload,
+  UserMessageDto,
+} from '../model/network/user.model';
 
 export enum ChatActions {
+  getPrevMessages = `[Chat Actions] get previous chat messages from server`,
   getChatMessage = `[Chat Actions] get chat message`,
   sendChatMessage = `[Chat Actions] send chat message`,
 }
+
+export const getPrevMessages = createAction(
+  ChatActions.getPrevMessages,
+  props<PrevUserMessagesActionPayload>()
+);
 export const getChatMessage = createAction(
   ChatActions.getChatMessage,
   props<UserMessageDto>()

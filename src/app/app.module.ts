@@ -20,7 +20,7 @@ import { SketchEffects } from './effect/sketch.effects';
 
 import { sketchPageState } from './reducer/sketch-page.reducer';
 
-import { SketchPageService } from './page/sketch-page/sketch-page.service';
+import { SketchPageService } from './service/sketch-page.service';
 
 @NgModule({
   declarations: [

@@ -1,7 +1,10 @@
 import { TypedAction } from '@ngrx/store/src/models';
 import { CanvasActions } from '../action/canvas.actions';
 import { ChatActions } from '../action/chat.actions';
-import { UserMessageDto } from '../model/network/user.model';
+import {
+  PrevUserMessagesActionPayload,
+  UserMessageDto,
+} from '../model/network/user.model';
 import { CanvasDrawing } from '../view/canvas.view';
 
 export class SketchPageState {
@@ -11,27 +14,39 @@ export class SketchPageState {
 
   static handlesDrawEvent = (
     state: any,
-    a: CanvasDrawing & TypedAction<CanvasActions.drawOtherRealTimeDrawings>
+    actionPayload: CanvasDrawing &
+      TypedAction<CanvasActions.drawOtherRealTimeDrawings>
   ) => {
     return {
       ...state,
-      newDrawing: a,
+      newDrawing: actionPayload,
     };
   };
 
   static handlesNewMessageEvent = (
     state: any,
-    a: UserMessageDto & TypedAction<ChatActions.getChatMessage>
+    actionPayload: UserMessageDto & TypedAction<ChatActions.getChatMessage>
   ) => {
     return {
       ...state,
-      messages: [...state.messages, a],
+      messages: [...state.messages, actionPayload],
+    };
+  };
+
+  static handlesPrevMessagesEvent = (
+    state: any,
+    actionPayload: PrevUserMessagesActionPayload &
+      TypedAction<ChatActions.getPrevMessages>
+  ) => {
+    return {
+      ...state,
+      messages: [...state.messages, ...actionPayload.prevMessages],
     };
   };
 }
 
 export const initialPageState: SketchPageState = {
   newDrawing: null,
-  messages: [{ username: 'Samsoumite', content: 'test' }],
+  messages: [],
   clientId: '',
 };
