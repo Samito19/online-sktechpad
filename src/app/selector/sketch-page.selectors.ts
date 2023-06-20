@@ -11,5 +11,10 @@ export const selectSketchPageStateMessages = createSelector(
 
 export const selectSketchPageStateNewDrawing = createSelector(
   getSketchPageState,
-  (state: SketchPageState) => state.newDrawing
+  (state: SketchPageState) => state.canvas.latestDrawing
+);
+
+export const selectSketchPagePenWidth = createSelector(
+  getSketchPageState,
+  (state: SketchPageState) => state.canvas.penWidth
 );

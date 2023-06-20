@@ -21,6 +21,7 @@ import { SketchEffects } from './effect/sketch.effects';
 import { sketchPageState } from './reducer/sketch-page.reducer';
 
 import { SketchPageService } from './service/sketch-page.service';
+import { SliderComponent } from './shared/slider/slider.component';
 
 @NgModule({
   declarations: [
@@ -46,13 +47,14 @@ import { SketchPageService } from './service/sketch-page.service';
       sketchPageState,
     }),
     BrowserAnimationsModule,
-    SketchCardComponent,
     EffectsModule.forRoot([SketchEffects]),
     StoreDevtoolsModule.instrument({
       maxAge: 25,
       logOnly: !isDevMode(),
       trace: true,
     }),
+    SketchCardComponent,
+    SliderComponent,
   ],
 })
 export class AppModule {}

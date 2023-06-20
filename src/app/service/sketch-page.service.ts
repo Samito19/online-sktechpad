@@ -11,17 +11,18 @@ import {
 import { ApiUrls } from '../model/network/api-urls';
 import { UserMessageDto } from '../model/network/user.model';
 import {
+  selectSketchPagePenWidth,
   selectSketchPageStateMessages,
   selectSketchPageStateNewDrawing,
 } from '../selector/sketch-page.selectors';
 import { SketchPageState } from '../state/sketch-page.state';
-import { CanvasDrawing } from '../view/canvas.view';
-
+import { CanvasDrawing } from '../model/canvas/canvas.models';
 @Injectable()
 export class SketchPageService {
   sketchName: string;
   messages$: Observable<UserMessageDto[]>;
   newDrawing$: Observable<CanvasDrawing | null>;
+  penWidth$: Observable<number>;
 
   constructor(
     private route: ActivatedRoute,
@@ -30,11 +31,13 @@ export class SketchPageService {
   ) {
     this.messages$ = this.store.pipe(select(selectSketchPageStateMessages));
     this.newDrawing$ = this.store.pipe(select(selectSketchPageStateNewDrawing));
+    this.penWidth$ = this.store.pipe(select(selectSketchPagePenWidth));
   }
 
   init = () => {
     const sketchName = this.route.children[0].snapshot.params['sketchId'] ?? 0;
     this.sketchName = sketchName;
+
     this.store.dispatch(
       connectToCanvasByName({
         sketchName,
@@ -59,4 +62,6 @@ export class SketchPageService {
     };
     this.store.dispatch(sendChatMessage(newUserMessageDto));
   }
+
+  getMessages() {}
 }

@@ -5,13 +5,19 @@ import {
   PrevUserMessagesActionPayload,
   UserMessageDto,
 } from '../model/network/user.model';
-import { CanvasDrawing } from '../view/canvas.view';
+import { CanvasDrawing } from '../model/canvas/canvas.models';
 import { HubConnectionPrereq } from '../model/hub/hub.models';
+
+class Canvas {
+  latestDrawing: CanvasDrawing | null = null;
+  allDrawings: CanvasDrawing[] = [];
+  penWidth: number = 1;
+}
 
 export class SketchPageState {
   messages: UserMessageDto[] = [];
   clientId: string;
-  newDrawing: CanvasDrawing | null = null;
+  canvas: Canvas = { latestDrawing: null, allDrawings: [], penWidth: 1 };
 
   static handlesSketchName = (
     state: any,
@@ -24,13 +30,30 @@ export class SketchPageState {
   };
 
   static handlesDrawEvent = (
-    state: any,
+    state: SketchPageState,
     actionPayload: CanvasDrawing &
       TypedAction<CanvasActions.drawOtherRealTimeDrawings>
   ) => {
     return {
       ...state,
-      newDrawing: { ...actionPayload },
+      canvas: {
+        ...state.canvas,
+        allDrawings: [...state.canvas.allDrawings, { ...actionPayload }],
+        latestDrawing: { ...actionPayload },
+      },
+    };
+  };
+
+  static handlesPenWidthChange = (
+    state: SketchPageState,
+    actionPayload: { width: number } & TypedAction<CanvasActions.changePenWidth>
+  ) => {
+    return {
+      ...state,
+      canvas: {
+        ...state.canvas,
+        penWidth: actionPayload.width,
+      },
     };
   };
 
@@ -57,7 +80,7 @@ export class SketchPageState {
 }
 
 export const initialPageState: SketchPageState = {
-  newDrawing: null,
   messages: [],
   clientId: '',
+  canvas: new Canvas(),
 };

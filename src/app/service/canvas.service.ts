@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import p5 from 'p5';
 import { Observable, Subscription } from 'rxjs';
 import { sendDrawingToHub } from '../action/canvas.actions';
-import { CanvasDrawing } from '../view/canvas.view';
+import { CanvasDrawing } from '../model/canvas/canvas.models';
 import { SketchPageService } from './sketch-page.service';
 
 @Injectable({
@@ -12,6 +12,9 @@ import { SketchPageService } from './sketch-page.service';
 })
 export class CanvasService {
   newDrawing$: Observable<CanvasDrawing | null>;
+  penWidth$: Observable<number>;
+  penWidth: number;
+  penWidthSubscription: Subscription;
   newDrawingSubscription: Subscription;
   s: p5;
   canvas: p5;
@@ -22,6 +25,7 @@ export class CanvasService {
     private sketchPageService: SketchPageService
   ) {
     this.newDrawing$ = this.sketchPageService.newDrawing$;
+    this.penWidth$ = this.sketchPageService.penWidth$;
   }
 
   init = () => {
@@ -34,11 +38,14 @@ export class CanvasService {
         }
       }
     );
+    this.penWidthSubscription = this.penWidth$.subscribe((penWidth) => {
+      console.log(penWidth);
+      this.penWidth = penWidth;
+      this.s.strokeWeight(this.penWidth);
+    });
   };
 
-  disconnect = () => {
-    this.newDrawingSubscription.unsubscribe();
-  };
+  disconnect = () => {};
 
   sketch = (s: p5) => {
     this.handleSetup(s);
@@ -53,8 +60,8 @@ export class CanvasService {
       );
       canvas2.parent('canvas-sketch');
       canvas2.style;
-      this.s.strokeWeight(5);
       this.s.stroke(this.s.color(148, 0, 211));
+      this.s.strokeWeight(this.penWidth);
     };
 
     this.s.draw = this.handleDraw;
@@ -69,15 +76,20 @@ export class CanvasService {
 
       if (mouseX != pmouseX || mouseY != pmouseY) {
         this.s.line(mouseX, mouseY, pmouseX, pmouseY);
-        const newDrawing = CanvasDrawing.getFromP5(this.s);
+        const newDrawing = {
+          penWidth: this.penWidth,
+          ...CanvasDrawing.getPosition(this.s),
+        };
         this.store.dispatch(sendDrawingToHub(newDrawing));
       }
     }
   };
 
   handleOtherRealTimeDrawings = (payload: CanvasDrawing) => {
-    const { mouseX, mouseY, pmouseX, pmouseY } = payload;
+    const { penWidth, mouseX, mouseY, pmouseX, pmouseY } = payload;
+    this.s.strokeWeight(penWidth);
     this.s.line(mouseX, mouseY, pmouseX, pmouseY);
+    this.s.strokeWeight(this.penWidth);
   };
 
   //TODO Extract to canvas api service - this returned object can be saved in a state object using a reducer that handles getPrevDrawingsSuccess
@@ -89,7 +101,6 @@ export class CanvasService {
       .subscribe((userDrawings) => {
         userDrawings.forEach((user: any) => {
           user['drawings'].forEach((drawing: any) => {
-            console.log(drawing);
             this.handleOtherRealTimeDrawings(drawing);
           });
         });

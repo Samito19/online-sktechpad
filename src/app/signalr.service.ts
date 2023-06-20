@@ -5,7 +5,7 @@ import { receiveRealTimeDrawings } from './action/canvas.actions';
 import { getChatMessage } from './action/chat.actions';
 import { SignalRHubs } from './model/hub/hub.models';
 import { UserMessageDto } from './model/network/user.model';
-import { CanvasDrawing } from './view/canvas.view';
+import { CanvasDrawing } from './model/canvas/canvas.models';
 
 export type SignalRHubConnections = {
   [key in SignalRHubs]: signalR.HubConnection | null;

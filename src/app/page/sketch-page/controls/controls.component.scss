@@ -8,7 +8,7 @@
   background-color: rgb(47, 32, 144);
   position: absolute;
   top: 40%;
-  left: 1%;
+  left: 2rem;
   border-radius: 5%;
   cursor: pointer;
 }
@@ -16,4 +16,26 @@
 .controls-icon {
   height: 2rem;
   width: 2rem;
+}
+
+.controls-panel {
+  border: 2px solid rgb(47, 32, 144);
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: fit-content;
+  width: 10rem;
+  position: absolute;
+  top: 40%;
+  left: 6rem;
+  border-radius: 5%;
+  padding: 0.1rem;
+}
+
+.controls-panel-container {
+  display: flex;
+  flex-direction: column;
+  height: fit-content;
+  width: fit-content;
 }

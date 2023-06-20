@@ -1,0 +1,14 @@
+<mat-slider
+  [disabled]="disabled"
+  [max]="max"
+  [min]="min"
+  [step]="step"
+  [discrete]
+>
+  <input
+    matSliderThumb
+    (valueChange)="updateSliderValue(value)"
+    [(ngModel)]="value"
+  />
+</mat-slider>
+{{ value }}
