@@ -4,7 +4,6 @@ export interface IUserMessageDto {
 }
 
 export class UserMessageDto implements IUserMessageDto {
-  sketchName?: string = '';
   username: string = '';
   content: string = '';
 }

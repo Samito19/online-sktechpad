@@ -6,11 +6,22 @@ import {
   UserMessageDto,
 } from '../model/network/user.model';
 import { CanvasDrawing } from '../view/canvas.view';
+import { HubConnectionPrereq } from '../model/hub/hub.models';
 
 export class SketchPageState {
   messages: UserMessageDto[] = [];
   clientId: string;
   newDrawing: CanvasDrawing | null = null;
+
+  static handlesSketchName = (
+    state: any,
+    actionPayload: HubConnectionPrereq
+  ) => {
+    return {
+      ...state,
+      sketchName: actionPayload.sketchName,
+    };
+  };
 
   static handlesDrawEvent = (
     state: any,
@@ -19,7 +30,7 @@ export class SketchPageState {
   ) => {
     return {
       ...state,
-      newDrawing: actionPayload,
+      newDrawing: { ...actionPayload },
     };
   };
 

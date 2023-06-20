@@ -7,7 +7,6 @@ import {
   connectToSketchChatroom,
 } from '../action/sketch.actions';
 import { SignalRHubs } from '../model/hub/hub.models';
-import { CanvasService } from '../service/canvas.service';
 import { SignalRService } from '../signalr.service';
 import { sendDrawingToHub } from './../action/canvas.actions';
 
@@ -15,8 +14,7 @@ import { sendDrawingToHub } from './../action/canvas.actions';
 export class SketchEffects {
   constructor(
     private actions$: Actions,
-    private signalRService: SignalRService,
-    private canvasService: CanvasService
+    private signalRService: SignalRService
   ) {}
 
   connectToCanvasDataSignalr = createEffect(
@@ -68,15 +66,4 @@ export class SketchEffects {
       ),
     { dispatch: false }
   );
-
-  // receiveRealTimeDrawings = createEffect(
-  //   () =>
-  //     this.actions$.pipe(
-  //       ofType(receiveRealTimeDrawings),
-  //       tap(({ type, ...payload }) => {
-  //         //this.canvasService.handleOtherRealTimeDrawings(payload);
-  //       })
-  //     ),
-  //   { dispatch: false }
-  // );
 }

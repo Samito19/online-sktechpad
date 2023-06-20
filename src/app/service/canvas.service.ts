@@ -24,12 +24,9 @@ export class CanvasService {
     this.newDrawing$ = this.sketchPageService.newDrawing$;
   }
 
-  windowResized = () => {
-    this.s.resizeCanvas(this.s.windowWidth, this.s.windowHeight);
-  };
-
   init = () => {
     this.canvas = new p5(this.sketch);
+    this.getPrevDrawings();
     this.newDrawingSubscription = this.newDrawing$.subscribe(
       (drawingPayload: CanvasDrawing | null) => {
         if (drawingPayload) {
@@ -61,28 +58,19 @@ export class CanvasService {
     };
 
     this.s.draw = this.handleDraw;
-    this.s.keyPressed = this.handleKeyPressed;
-  };
-
-  handleKeyPressed = () => {
-    if (this.s.key === 'c') {
-      //this.canvasService.clearCanvas();
-      window.location.reload();
-    }
   };
 
   handleDraw = () => {
-    if (this.s.mouseIsPressed) {
-      if (this.s.mouseButton === this.s.LEFT) {
-        this.s.line(
-          this.s.mouseX,
-          this.s.mouseY,
-          this.s.pmouseX,
-          this.s.pmouseY
-        );
-        const payload = CanvasDrawing.getFromP5(this.s);
+    if (this.s.mouseIsPressed && this.s.mouseButton === this.s.LEFT) {
+      const mouseX = Math.round(this.s.mouseX);
+      const pmouseX = Math.round(this.s.pmouseX);
+      const mouseY = Math.round(this.s.mouseY);
+      const pmouseY = Math.round(this.s.pmouseY);
 
-        this.store.dispatch(sendDrawingToHub(payload));
+      if (mouseX != pmouseX || mouseY != pmouseY) {
+        this.s.line(mouseX, mouseY, pmouseX, pmouseY);
+        const newDrawing = CanvasDrawing.getFromP5(this.s);
+        this.store.dispatch(sendDrawingToHub(newDrawing));
       }
     }
   };
@@ -93,8 +81,19 @@ export class CanvasService {
   };
 
   //TODO Extract to canvas api service - this returned object can be saved in a state object using a reducer that handles getPrevDrawingsSuccess
-  getPrevDrawings(): Observable<number[][]> {
-    return this.http.get<number[][]>('http://localhost:5212/getDrawings');
+  getPrevDrawings() {
+    this.http
+      .get<any>(
+        `http://localhost:5212/getDrawings/${this.sketchPageService.sketchName}`
+      )
+      .subscribe((userDrawings) => {
+        userDrawings.forEach((user: any) => {
+          user['drawings'].forEach((drawing: any) => {
+            console.log(drawing);
+            this.handleOtherRealTimeDrawings(drawing);
+          });
+        });
+      });
   }
 
   clearCanvas() {

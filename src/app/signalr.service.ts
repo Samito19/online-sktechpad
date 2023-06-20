@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
-import { SignalRHubs } from './model/hub/hub.models';
-import { IUserMessageDto, UserMessageDto } from './model/network/user.model';
-import { CanvasDrawing } from './view/canvas.view';
 import { Store } from '@ngrx/store';
 import { receiveRealTimeDrawings } from './action/canvas.actions';
 import { getChatMessage } from './action/chat.actions';
+import { SignalRHubs } from './model/hub/hub.models';
+import { UserMessageDto } from './model/network/user.model';
+import { CanvasDrawing } from './view/canvas.view';
 
 export type SignalRHubConnections = {
   [key in SignalRHubs]: signalR.HubConnection | null;
@@ -15,9 +15,11 @@ export type SignalRHubConnections = {
   providedIn: 'root',
 })
 export class SignalRService {
-  constructor(private store: Store) {}
   sketchName: string;
   private connections: SignalRHubConnections = { canvas: null, chat: null };
+
+  constructor(private store: Store) {}
+
   async Connect(hub: string, sketchName: string) {
     let connection: signalR.HubConnection;
     this.sketchName = sketchName;
@@ -29,26 +31,28 @@ export class SignalRService {
       .withAutomaticReconnect()
       .build();
     await connection.start().catch((err) => console.log('Conn Error:', err));
+    this.listenToHubs(hub, connection);
+  }
+
+  private listenToHubs(hub: string, connection: signalR.HubConnection) {
     switch (hub) {
       case SignalRHubs.Canvas:
-        connection?.invoke('AddToSketchCanvasGroup', sketchName);
+        connection?.invoke('AddToSketchCanvasGroup', this.sketchName);
         this.connections.canvas = connection;
-        connection.on(
-          'newSketchCanvasDrawings',
-          (mouseX, mouseY, pmouseX, pmouseY) => {
-            this.store.dispatch(
-              receiveRealTimeDrawings({ mouseX, mouseY, pmouseX, pmouseY })
-            );
-          }
-        );
+        connection.on('newSketchCanvasDrawings', (newDrawing) => {
+          this.store.dispatch(receiveRealTimeDrawings(newDrawing));
+        });
         break;
       case SignalRHubs.Chat:
-        connection?.invoke('AddToSketchChatGroup', sketchName);
+        connection?.invoke('AddToSketchChatGroup', this.sketchName);
         this.connections.chat = connection;
         connection.on(
           'messageReceived',
           (username: string, content: string) => {
-            const userMessagePayload: UserMessageDto = { username, content };
+            const userMessagePayload: UserMessageDto = {
+              username,
+              content,
+            };
             this.store.dispatch(getChatMessage(userMessagePayload));
           }
         );
@@ -63,23 +67,18 @@ export class SignalRService {
     if (
       hub === SignalRHubs.Chat &&
       (payload as UserMessageDto)?.username &&
-      (payload as UserMessageDto)?.content &&
-      (payload as UserMessageDto)?.sketchName
+      (payload as UserMessageDto)?.content
     ) {
-      this.connections[hub]?.invoke('newMessage', payload);
+      this.connections[hub]?.invoke('newMessage', payload, this.sketchName);
     } else if (
       hub === SignalRHubs.Canvas &&
       (payload as CanvasDrawing)?.mouseX &&
       (payload as CanvasDrawing)?.mouseY
     ) {
-      const { mouseX, mouseY, pmouseX, pmouseY } = payload as CanvasDrawing;
       this.connections[hub]?.invoke(
         'SendSketchCanvasDrawings',
-        this.sketchName,
-        mouseX,
-        mouseY,
-        pmouseX,
-        pmouseY
+        payload,
+        this.sketchName
       );
     } else {
       console.warn(`Inexistant hub ! Hub: ${hub}`);

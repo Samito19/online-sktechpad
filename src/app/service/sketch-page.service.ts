@@ -1,21 +1,20 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store, select } from '@ngrx/store';
+import { Observable } from 'rxjs';
 import { getPrevMessages, sendChatMessage } from '../action/chat.actions';
 import {
   connectToCanvasByName,
   connectToSketchChatroom,
 } from '../action/sketch.actions';
-import { CanvasService } from './canvas.service';
-import { SketchPageState } from '../state/sketch-page.state';
-import { HttpClient } from '@angular/common/http';
-import { UserMessageDto } from '../model/network/user.model';
 import { ApiUrls } from '../model/network/api-urls';
+import { UserMessageDto } from '../model/network/user.model';
 import {
   selectSketchPageStateMessages,
   selectSketchPageStateNewDrawing,
 } from '../selector/sketch-page.selectors';
-import { Observable } from 'rxjs';
+import { SketchPageState } from '../state/sketch-page.state';
 import { CanvasDrawing } from '../view/canvas.view';
 
 @Injectable()
@@ -35,7 +34,6 @@ export class SketchPageService {
 
   init = () => {
     const sketchName = this.route.children[0].snapshot.params['sketchId'] ?? 0;
-
     this.sketchName = sketchName;
     this.store.dispatch(
       connectToCanvasByName({
@@ -56,7 +54,6 @@ export class SketchPageService {
 
   sendMessage(messageContent: string) {
     const newUserMessageDto: UserMessageDto = {
-      sketchName: this.sketchName,
       username: 'Samsoumite',
       content: messageContent,
     };
