@@ -5,6 +5,7 @@ export enum CanvasActions {
   drawOtherRealTimeDrawings = `[Canvas Actions] receive other real time drawings`,
   sendDrawingToHub = `[Canvas Actions] send user drawing to Hub`,
   changePenWidth = `[Canvas Actions] change pen width`,
+  toggleTool = `[Canvas Actions] toggle tool`,
 }
 export const sendDrawingToHub = createAction(
   CanvasActions.sendDrawingToHub,
@@ -14,6 +15,11 @@ export const sendDrawingToHub = createAction(
 export const receiveRealTimeDrawings = createAction(
   CanvasActions.drawOtherRealTimeDrawings,
   props<CanvasDrawing>()
+);
+
+export const toggleTool = createAction(
+  CanvasActions.toggleTool,
+  props<{ tool: string | null }>()
 );
 
 export const changePenWidth = createAction(

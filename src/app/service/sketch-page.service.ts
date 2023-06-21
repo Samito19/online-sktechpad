@@ -1,3 +1,4 @@
+import { selectToggledTool } from './../selector/sketch-page.selectors';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
@@ -23,6 +24,7 @@ export class SketchPageService {
   messages$: Observable<UserMessageDto[]>;
   newDrawing$: Observable<CanvasDrawing | null>;
   penWidth$: Observable<number>;
+  toggledTool$: Observable<string | null>;
 
   constructor(
     private route: ActivatedRoute,
@@ -32,6 +34,7 @@ export class SketchPageService {
     this.messages$ = this.store.pipe(select(selectSketchPageStateMessages));
     this.newDrawing$ = this.store.pipe(select(selectSketchPageStateNewDrawing));
     this.penWidth$ = this.store.pipe(select(selectSketchPagePenWidth));
+    this.toggledTool$ = this.store.pipe(select(selectToggledTool));
   }
 
   init = () => {

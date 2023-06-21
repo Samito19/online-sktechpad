@@ -12,12 +12,18 @@ class Canvas {
   latestDrawing: CanvasDrawing | null = null;
   allDrawings: CanvasDrawing[] = [];
   penWidth: number = 1;
+  toggledTool: string | null = null;
 }
 
 export class SketchPageState {
   messages: UserMessageDto[] = [];
   clientId: string;
-  canvas: Canvas = { latestDrawing: null, allDrawings: [], penWidth: 1 };
+  canvas: Canvas = {
+    latestDrawing: null,
+    allDrawings: [],
+    penWidth: 1,
+    toggledTool: 'pen',
+  };
 
   static handlesSketchName = (
     state: any,
@@ -53,6 +59,21 @@ export class SketchPageState {
       canvas: {
         ...state.canvas,
         penWidth: actionPayload.width,
+      },
+    };
+  };
+
+  static handleToggleTool = (
+    state: SketchPageState,
+    actionPayload: {
+      tool: string | null;
+    } & TypedAction<CanvasActions.toggleTool>
+  ) => {
+    return {
+      ...state,
+      canvas: {
+        ...state.canvas,
+        toggledTool: actionPayload.tool,
       },
     };
   };

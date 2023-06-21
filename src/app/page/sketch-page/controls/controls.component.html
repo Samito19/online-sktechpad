@@ -1,11 +1,29 @@
 <div class="controls-container">
   <img class="controls-icon" src="./assets/icons/home.svg" />
-  <img class="controls-icon" src="./assets/icons/pen-tool.svg" />
-  <img class="controls-icon" src="./assets/icons/users.svg" />
-  <img class="controls-icon" src="./assets/icons/eraser.svg" />
+  <img
+    class="controls-icon"
+    src="./assets/icons/pen-tool.svg"
+    (click)="showTool('pen')"
+  />
+  <img
+    class="controls-icon"
+    src="./assets/icons/users.svg"
+    (click)="showTool('users')"
+  />
+  <img
+    class="controls-icon"
+    src="./assets/icons/eraser.svg"
+    (click)="showTool('erase')"
+  />
 </div>
-<div class="controls-panel">
-  <div class="controls-panel-container">
+<img
+  *ngIf="toggledTool$ | async as tool"
+  class="controls-panel-close"
+  src="./assets/icons/x-circle.svg"
+  (click)="showTool(null)"
+/>
+<div *ngIf="toggledTool$ | async as tool" class="controls-panel">
+  <div *ngIf="tool === 'pen'" class="controls-panel-container">
     <label style="margin-top: 0.5rem; font-weight: 600">Pen Width: </label>
     <slider (sliderValue)="changePenWidth($event)"></slider>
   </div>

@@ -33,6 +33,16 @@
   padding: 0.1rem;
 }
 
+.controls-panel-close {
+  height: 2rem;
+  width: 2rem;
+  position: absolute;
+  top: 32.2rem;
+  left: 15.5rem;
+  z-index: 1;
+  cursor: pointer;
+}
+
 .controls-panel-container {
   display: flex;
   flex-direction: column;

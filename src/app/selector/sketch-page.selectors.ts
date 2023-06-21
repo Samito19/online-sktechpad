@@ -14,6 +14,11 @@ export const selectSketchPageStateNewDrawing = createSelector(
   (state: SketchPageState) => state.canvas.latestDrawing
 );
 
+export const selectToggledTool = createSelector(
+  getSketchPageState,
+  (state: SketchPageState) => state.canvas.toggledTool
+);
+
 export const selectSketchPagePenWidth = createSelector(
   getSketchPageState,
   (state: SketchPageState) => state.canvas.penWidth
