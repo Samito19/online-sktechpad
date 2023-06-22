@@ -8,6 +8,7 @@ import { getPrevMessages, sendChatMessage } from '../action/chat.actions';
 import {
   connectToCanvasByName,
   connectToSketchChatroom,
+  getConnectedUsers,
 } from '../action/sketch.actions';
 import { ApiUrls } from '../model/network/api-urls';
 import { UserMessageDto } from '../model/network/user.model';
@@ -38,24 +39,27 @@ export class SketchPageService {
   }
 
   init = () => {
-    const sketchName = this.route.children[0].snapshot.params['sketchId'] ?? 0;
+    const sketchName =
+      this.route.children[0].snapshot.params['sketchId'] ?? '0';
     this.sketchName = sketchName;
-
-    this.store.dispatch(
-      connectToCanvasByName({
-        sketchName,
-      })
-    );
-    this.store.dispatch(
-      connectToSketchChatroom({
-        sketchName,
-      })
-    );
-    this.http
-      .get<UserMessageDto[]>(ApiUrls.GetMessages + sketchName)
-      .subscribe((prevMessages) =>
-        this.store.dispatch(getPrevMessages({ prevMessages }))
+    if (sketchName) {
+      this.store.dispatch(
+        connectToCanvasByName({
+          sketchName,
+        })
       );
+      this.store.dispatch(
+        connectToSketchChatroom({
+          sketchName,
+        })
+      );
+      this.http
+        .get<UserMessageDto[]>(ApiUrls.GetMessages + sketchName)
+        .subscribe((prevMessages) =>
+          this.store.dispatch(getPrevMessages({ prevMessages }))
+        );
+      this.getConnectedUsers();
+    }
   };
 
   sendMessage(messageContent: string) {
@@ -66,5 +70,11 @@ export class SketchPageService {
     this.store.dispatch(sendChatMessage(newUserMessageDto));
   }
 
-  getMessages() {}
+  getConnectedUsers() {
+    this.http
+      .get<string[]>(ApiUrls.GetConnectedUsers + this.sketchName)
+      .subscribe((connectedUsers) =>
+        this.store.dispatch(getConnectedUsers({ connectedUsers }))
+      );
+  }
 }

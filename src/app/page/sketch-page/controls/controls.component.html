@@ -27,4 +27,8 @@
     <label style="margin-top: 0.5rem; font-weight: 600">Pen Width: </label>
     <slider (sliderValue)="changePenWidth($event)"></slider>
   </div>
+  <div *ngIf="tool === 'users'" class="controls-panel-container">
+    <span>Online</span>
+    <span>Samsoumite</span>
+  </div>
 </div>

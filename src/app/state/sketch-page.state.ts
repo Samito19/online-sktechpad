@@ -13,6 +13,7 @@ class Canvas {
   allDrawings: CanvasDrawing[] = [];
   penWidth: number = 1;
   toggledTool: string | null = null;
+  connectedUsers: string[];
 }
 
 export class SketchPageState {
@@ -23,6 +24,17 @@ export class SketchPageState {
     allDrawings: [],
     penWidth: 1,
     toggledTool: 'pen',
+    connectedUsers: [],
+  };
+
+  static handlesConnectedUsers = (
+    state: any,
+    actionPayload: { connectedUsers: string[] }
+  ) => {
+    return {
+      ...state,
+      connectedUsers: actionPayload.connectedUsers,
+    };
   };
 
   static handlesSketchName = (

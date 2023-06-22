@@ -6,6 +6,7 @@ import { getChatMessage } from './action/chat.actions';
 import { SignalRHubs } from './model/hub/hub.models';
 import { UserMessageDto } from './model/network/user.model';
 import { CanvasDrawing } from './model/canvas/canvas.models';
+import { getConnectedUsers } from './action/sketch.actions';
 
 export type SignalRHubConnections = {
   [key in SignalRHubs]: signalR.HubConnection | null;
@@ -23,6 +24,7 @@ export class SignalRService {
   async Connect(hub: string, sketchName: string) {
     let connection: signalR.HubConnection;
     this.sketchName = sketchName;
+    console.log(sketchName);
     connection = new signalR.HubConnectionBuilder()
       .withUrl(
         `http://localhost:5212/${hub}`,
@@ -31,20 +33,31 @@ export class SignalRService {
       .withAutomaticReconnect()
       .build();
     await connection.start().catch((err) => console.log('Conn Error:', err));
-    this.listenToHubs(hub, connection);
+    this.listenToHubs(hub, connection, sketchName);
   }
 
-  private listenToHubs(hub: string, connection: signalR.HubConnection) {
+  private listenToHubs(
+    hub: string,
+    connection: signalR.HubConnection,
+    sketchName: string
+  ) {
+    connection.on('connectionEvent', (connectedUsers: string[]) => {
+      console.log(connectedUsers);
+      const connectedUsersPayload = {
+        connectedUsers,
+      };
+      this.store.dispatch(getConnectedUsers(connectedUsersPayload));
+    });
     switch (hub) {
       case SignalRHubs.Canvas:
-        connection?.invoke('AddToSketchCanvasGroup', this.sketchName);
+        connection?.invoke('AddToSketchCanvasGroup', sketchName);
         this.connections.canvas = connection;
         connection.on('newSketchCanvasDrawings', (newDrawing) => {
           this.store.dispatch(receiveRealTimeDrawings(newDrawing));
         });
         break;
       case SignalRHubs.Chat:
-        connection?.invoke('AddToSketchChatGroup', this.sketchName);
+        connection?.invoke('AddToSketchChatGroup', sketchName);
         this.connections.chat = connection;
         connection.on(
           'messageReceived',

@@ -22,10 +22,12 @@ export class SketchEffects {
       this.actions$.pipe(
         ofType(connectToCanvasByName),
         tap(async (action) => {
-          await this.signalRService.Connect(
-            SignalRHubs.Canvas,
-            action.sketchName
-          );
+          if (action.sketchName) {
+            await this.signalRService.Connect(
+              SignalRHubs.Canvas,
+              action.sketchName
+            );
+          }
         })
       ),
     { dispatch: false }
@@ -35,11 +37,13 @@ export class SketchEffects {
     () =>
       this.actions$.pipe(
         ofType(connectToSketchChatroom),
-        tap(async ({ type, ...payload }) => {
-          await this.signalRService.Connect(
-            SignalRHubs.Chat,
-            payload.sketchName
-          );
+        tap(async (action) => {
+          if (action.sketchName) {
+            await this.signalRService.Connect(
+              SignalRHubs.Chat,
+              action.sketchName
+            );
+          }
         })
       ),
     { dispatch: false }

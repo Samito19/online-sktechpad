@@ -39,7 +39,6 @@ export class CanvasService {
       }
     );
     this.penWidthSubscription = this.penWidth$.subscribe((penWidth) => {
-      console.log(penWidth);
       this.penWidth = penWidth;
       this.s.strokeWeight(this.penWidth);
     });
@@ -85,6 +84,7 @@ export class CanvasService {
     }
   };
 
+  //TODO Load test 
   handleOtherRealTimeDrawings = (payload: CanvasDrawing) => {
     const { penWidth, mouseX, mouseY, pmouseX, pmouseY } = payload;
     this.s.strokeWeight(penWidth);
